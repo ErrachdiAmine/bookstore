@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 
-export default function CatalogPage() {
+function Home () {
   const [books, setBooks] = useState([]);
   const [query, setQuery] = useState('');
   const [filtered, setFiltered] = useState([]);
 
   useEffect(() => {
-    // TODO: replace with actual API call
     const mockBooks = [
       { id: 1, title: 'Modern React', author: 'Jane Doe', cover: '/covers/react.jpg' },
       { id: 2, title: 'Tailwind in Action', author: 'John Smith', cover: '/covers/tailwind.jpg' },
@@ -26,18 +25,20 @@ export default function CatalogPage() {
     setFiltered(results);
   }, [query, books]);
 
+
   return (
     <div className="min-h-screen bg-white p-4 sm:p-6">
       <header className="flex flex-col sm:flex-row items-center justify-between mb-6">
         <h1 className="text-2xl sm:text-3xl font-semibold text-blue-600 mb-4 sm:mb-0">Book Catalog</h1>
-        <div className="flex w-full sm:w-auto">
-          <div className="relative flex-1">
+
+        <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+          <div className="relative w-full sm:w-auto">
             <input
               type="text"
               value={query}
               onChange={e => setQuery(e.target.value)}
               placeholder="Search by title or author"
-              className="w-full border border-gray-300 rounded-l-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-65 border border-gray-300 rounded-l-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
               onClick={() => {}}
@@ -73,7 +74,10 @@ export default function CatalogPage() {
             </div>
           </div>
         ))}
-      </div>
+      </div>-
     </div>
   );
 }
+
+
+export default Home;

@@ -14,6 +14,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os 
 
+load_dotenv()
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -36,6 +39,7 @@ INSTALLED_APPS = [
     'api',
     'core',
     'rest_framework',
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,7 +48,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+#cors settings
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173'
+]
 
+CORS_ALLOWED_HOSTS = ['*']
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -55,6 +64,8 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = 'core.User'
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -87,7 +98,6 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-load_dotenv()
 
 DATABASES = {
     'default': {
@@ -98,6 +108,17 @@ DATABASES = {
         'PASSWORD': os.getenv('PASSWORD', default='000')        
     }
 }
+
+
+#Email set-up
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS')
+DEFAULT_FROM_EMAIL = 'Leafline Books <noreply@gmail.com>'
+
 
 
 # Password validation
