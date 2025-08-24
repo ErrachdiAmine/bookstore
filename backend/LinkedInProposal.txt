@@ -1,1 +1,0 @@
-Hello sir! Thank you for reaching out. I am a full-stack developer who utilizes cutting-edge technologies to build robust and functional web applications. Typically, React & TailwindCSS for the front-end, Django for the backend, and MySQL as a database. Please feel free to share your project needs, and I will be happy to serve you.
