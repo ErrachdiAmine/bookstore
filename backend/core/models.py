@@ -3,35 +3,37 @@ from django.utils import timezone
 import uuid
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+
 
 # Create your models here.
-
-
 
 class User(AbstractUser):
     first_name = models.CharField(max_length=25)
     last_name = models.CharField(max_length=25)
-    username = models.CharField(unique=True ,max_length=25)
-    email = models.EmailField()
-    number = models.CharField(max_length=9)
+    username = models.CharField(max_length=25, unique=True)
+    email = models.EmailField(unique=True)
     address = models.CharField(max_length=50)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)  # Changed to False - users must verify email first
     is_staff = models.BooleanField(default=False)
+    email_verified = models.BooleanField(default=False)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
 
 
 
-class EmailVerification(models.Model):
-    user       = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    code       = models.CharField(max_length=6, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    verified   = models.BooleanField(default=False)
+class Verification(models.Model):
+    username = models.CharField(max_length=25)
+    email = models.EmailField(unique=True)
+    passphrase = models.CharField(max_length=6, blank=True)
+    verified = models.BooleanField(default=False)
 
-    def generate_verification_code(self):
-        self.verification_code = f"{uuid.uuid4().int % 1000000:06d}"
-        self.code_generated_at = timezone.now()
-        self.email_verified = False
-        self.save()
-        return self.verification_code
 
-    def code_expired(self, minutes=15):
-        return timezone.now() > (self.code_generated_at or timezone.now()) + timezone.timedelta(minutes=minutes)
+    def __str__(self):
+        if self.verified is True:
+            return f"{self.username}'s email is verified!"
+        else:
+            return f"{self.username}'s email is not verified!"

@@ -1,15 +1,15 @@
 from django.shortcuts import render
-from .serializers import UserSerializer, EmailVerificationSerializer
-from core.models import User, EmailVerification
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from rest_framework.permissions import AllowAny
-from rest_framework import status, permissions
+from rest_framework import status
+from rest_framework_simplejwt.authentication import JWTAuthentication 
+from .serializers import UserSerializer, VerificationSerializer
+from core.models import User, Verification
+
 
 # Create your views here.
-
-
 
 class UserView(APIView):
     permission_classes = [AllowAny]
@@ -28,13 +28,21 @@ class UserView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-                
 
-class EmailVerificationView(APIView):
-    def get(self, request):
-        ev = EmailVerification.objects.all()
-        serializer = EmailVerificationSerializer(ev)
-        if serializer:
-            return Response(serializer.data)
-        else:
-            return Http404
+
+
+class VerificationView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        queryset = Verification.objects.all()
+        serializer = VerificationSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, *args, **kwargs):
+        serializer = VerificationSerializer(data={}, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        verification_instance = serializer.save()
+        
+        response_serializer = VerificationSerializer(verification_instance)
+
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)

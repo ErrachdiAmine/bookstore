@@ -30,7 +30,6 @@ SECRET_KEY = 'django-insecure-p8__rpo(i)x%m14x8-#5reae39!h%5fp7r@zg)hby)d_e__)57
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -56,9 +55,18 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOWED_HOSTS = ['*']
 
 REST_FRAMEWORK = {
+
     'DEFAULT_PERMISSION_CLASSES': [
+
         'rest_framework.permissions.IsAuthenticated',
+    ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+
+        'rest_framework_simplejwt.authentication.JWTAuthentication'
     ]
+    
+
 }
 
 AUTH_USER_MODEL = 'core.User'
@@ -110,13 +118,16 @@ DATABASES = {
 }
 
 
-#Email set-up
+# Email set-up - Use console backend for development to avoid SMTP issues
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# For production, use these SMTP settings (comment out the console backend above)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST', default='errachdi.og@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS', default='1234AAfor!!og')
 DEFAULT_FROM_EMAIL = 'Leafline Books <noreply@gmail.com>'
 
 
@@ -161,3 +172,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

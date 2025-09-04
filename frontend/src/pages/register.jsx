@@ -1,7 +1,13 @@
 import React, { useState } from 'react'
-import axios from 'axios'
+import { registerUser } from '../auth'
+import { useNavigate } from 'react-router';
+import axios from 'axios';
 
 const Register = () => {
+
+  
+
+      
   const [form, setForm] = useState({
     first_name: '',
     last_name: '',
@@ -14,44 +20,55 @@ const Register = () => {
   });
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = e => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setForm(prev => ({
       ...prev,
       [name]: value
     }));
   };
-
+  
+  
   const handleSubmit = async e => {
     e.preventDefault();
     setError(null);
     setSuccess(false);
-    if (form.password !== form.confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
+    setLoading(true);
+    
     try {
-      const payload = {
-        first_name: form.first_name,
-        last_name: form.last_name,
-        username: form.username,
-        email: form.email,
-        address: form.address,
-        password: form.password
-            };
-      const response = await axios.post('http://127.0.0.1:8000/api/auth/signup/', payload); // send payload directly
+      await registerUser(
+        form.first_name,
+        form.last_name,
+        form.username,
+        form.email,
+        form.password,
+        form.confirmPassword, 
+        form.address
+      );
       setSuccess(true);
-      // Optionally clear form or redirect
+      
+
+      
+      
     } catch (err) {
-      setError(err.response?.data || 'Registration failed');
+      console.log(err);
+      setError(err.detail || 'Registration failed');
+    } finally {
+      setLoading(false);
+      
     }
   };
+
+  
 
   return (
     <>
     <div className='center-form'>
-    <form onSubmit={handleSubmit} className='flex flex-col sm:flex-wrap justify-center align-center w-fit border border-black-300 border-solid rounded-md border-0 p-4 m-4'>
+    <form onSubmit={handleSubmit} className='flex flex-col sm:flex-wrap justify-center align-center w-fit border bg-gray-50 border-black-300 border-solid rounded-md border-0 p-10 m-4'>
+      <h1 className='font-bold text-2xl'>REGISTER</h1>
       <ul className='mt-2'>
         <label className='flex ml-2 font-bold' htmlFor="first_name">First Name</label> 
         <li> <input className='formInput' type="text" name="first_name" value={form.first_name} onChange={handleChange} placeholder="First Name" /></li>
@@ -75,9 +92,15 @@ const Register = () => {
         <li> <input className='formInput' type="password" name="confirmPassword" value={form.confirmPassword} onChange={handleChange} placeholder="Confirm Password" /></li>
 
       </ul>
-      <button type="submit" className='border rounded-md bg-black text-white p-4 m-2 cursor-pointer w-100'>Register</button>
-      {error && console.log(error)}
+      <button 
+        type="submit" 
+        className='border rounded-md bg-black text-white p-4 m-2 cursor-pointer w-100'
+        disabled={loading}
+      >
+        {loading ? 'Registering...' : 'Register'}
+      </button>
       {success && <div style={{color:'green'}}>Registration successful!</div>}
+      {error && <div style={{color:'red'}}>{error}</div>}
     </form>
     </div>
     </>

@@ -1,8 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
-import Home from "../pages/home";
-import Register from "../pages/register";
-import App from "./App";
-import Notfound from "../pages/notfound";
+import Home from "../src/pages/home";
+import Register from "../src/pages/register";
+import Login from "../src/pages/login";
+import Verification from "./pages/verification";
+import App from "../src/App";
+import Notfound from "../src/pages/notfound";
 
 
 
@@ -30,6 +32,30 @@ const router = createBrowserRouter(
                 {
                     index: true,
                     element: <Register />
+                }, 
+            ]
+
+        },
+        {
+            path: '/login',
+            element: <App />,
+            errorElement: <Notfound />,
+            children: [
+                {
+                    index: true,
+                    element: <Login />
+                }, 
+            ]
+
+        },
+        {
+            path: '/verification',
+            element: <App />,
+            errorElement: <Notfound />,
+            children: [
+                {
+                    index: true,
+                    element: <Verification />
                 }, 
             ]
 
