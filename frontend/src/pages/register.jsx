@@ -1,6 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { registerUser } from '../auth'
 import { useNavigate } from 'react-router';
+import { loginUser } from '../auth';
+import { get_token } from '../auth';
+
 import axios from 'axios';
 
 const Register = () => {
@@ -62,7 +65,31 @@ const Register = () => {
     }
   };
 
+
+  const [isloggedin, setIsloggedin] = useState(false)
+
+  useEffect(() => {
+      const testAuthMechanism = async () => {
+          try {
+              if (isloggedin) {
+                  console.log('user is logged in! (test)')
+
+              } else {
+                  const response = await loginUser('theog@gmail.com', 'ogamine1')
+                  setIsloggedin(true)
+              } 
+
+          } catch (error) {
+              throw error.response.data;
+          } 
+      } 
+
+      testAuthMechanism()
+  }, [isloggedin]) 
+        
+
   
+
 
   return (
     <>

@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'api',
     'core',
     'rest_framework',
-    'corsheaders',
+    'corsheaders', 
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -11,7 +11,6 @@ import random
 from rest_framework.exceptions import ValidationError
 
 
-
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only = True, min_length=8)
     confirmPassword = serializers.CharField(write_only = True, min_length=8)
