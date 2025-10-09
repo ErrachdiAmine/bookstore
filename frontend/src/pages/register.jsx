@@ -3,14 +3,11 @@ import { registerUser } from '../auth'
 import { useNavigate } from 'react-router';
 import { loginUser } from '../auth';
 import { get_token } from '../auth';
-
 import axios from 'axios';
 
+
 const Register = () => {
-
-  
-
-      
+    
   const [form, setForm] = useState({
     first_name: '',
     last_name: '',
@@ -34,13 +31,13 @@ const Register = () => {
     }));
   };
   
-  
+
   const handleSubmit = async e => {
     e.preventDefault();
     setError(null);
     setSuccess(false);
     setLoading(true);
-    
+
     try {
       await registerUser(
         form.first_name,
@@ -52,43 +49,29 @@ const Register = () => {
         form.address
       );
       setSuccess(true);
-      
 
-      
-      
+      try {
+        loginUser(form.email, form.password)
+        localStorage.setItem('logged', true)
+      } catch (err) {
+        console.log(err);
+        setError(err.detail);
+      }
+
+    
     } catch (err) {
       console.log(err);
       setError(err.detail || 'Registration failed');
     } finally {
       setLoading(false);
+
       
     }
   };
 
 
-  const [isloggedin, setIsloggedin] = useState(false)
 
-  useEffect(() => {
-      const testAuthMechanism = async () => {
-          try {
-              if (isloggedin) {
-                  console.log('user is logged in! (test)')
 
-              } else {
-                  const response = await loginUser('theog@gmail.com', 'ogamine1')
-                  setIsloggedin(true)
-              } 
-
-          } catch (error) {
-              throw error.response.data;
-          } 
-      } 
-
-      testAuthMechanism()
-  }, [isloggedin]) 
-        
-
-  
 
 
   return (

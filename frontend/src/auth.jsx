@@ -3,6 +3,8 @@ import { jwtDecode } from "jwt-decode"
 import { useEffect, useState } from "react";
 
 const API_LINK = import.meta.env.VITE_API_URL
+
+
 export const registerUser = async (firstname, lastname, username, email, password, confirmPassword, address ) => {
     try {
         const response = await axios.post(`${API_LINK}/api/auth/signup/`, {
@@ -12,7 +14,7 @@ export const registerUser = async (firstname, lastname, username, email, passwor
             email,
             password,
             confirmPassword,
-            address 
+            address  
         });
         return response.data;
     } catch (error) {
@@ -33,7 +35,7 @@ export const loginUser = async (email, password) => {
 
         localStorage.setItem('access', response.data.access)
         localStorage.setItem('refresh', response.data.refresh)
-        localStorage.setItem('expires-at', exp)
+        localStorage.setItem('expires-at', exp*1000)
 
         return response.data;
     } catch (error) {
@@ -82,18 +84,21 @@ export const refresh_token = async (refresh, exptime) => {
 }
 
 
+const token = localStorage.getItem('access')
 
+console.log(token)
 
 
 const getPassphrase = () => {
-        const passphrase = axios.post(`${API_LINK}/api/auth/verification/`, {}, {
-          headers: {
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzU3MDA3NDg1LCJpYXQiOjE3NTcwMDcxODUsImp0aSI6IjE1ODlmNGRkODQ3ZTRjZGE4ZDJjODM0MWMyYTBkNmY2IiwidXNlcl9pZCI6IjQwIn0.elhtAEbbZj16NcOzbCdeRvspJTI1S8nmOcN3rA8u5s4',
-            'accept': 'application/json'
+    const passphrase = axios.post(`${API_LINK}/api/auth/verification/`, {}, {
+        headers: {
+        'Authorization': `Bearer ${token}` ,
+        'accept': 'application/json'
 
-          }}
-        ) 
-        return passphrase;
-      }
+        }}
+    ) 
+    console.log(passphrase)
+    return passphrase;
+}
 
-  getPassphrase();
+getPassphrase()

@@ -28,7 +28,7 @@ class UserSerializer(serializers.ModelSerializer):
         if attrs.get('password') != attrs.pop('confirmPassword', None):
             raise serializers.ValidationError({'confirmPassword': 'Passwords do not match!'})
         else:
-            return attrs
+            return attrsoo
         
     def create(self, validated_data):
         try:
@@ -40,6 +40,10 @@ class UserSerializer(serializers.ModelSerializer):
                 return user
         except IntegrityError as err:
             print(err)
+
+    
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
             
 
 
