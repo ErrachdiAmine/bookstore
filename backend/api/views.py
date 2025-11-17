@@ -5,8 +5,9 @@ from django.http import Http404
 from rest_framework.permissions import AllowAny
 from rest_framework import status
 from rest_framework_simplejwt.authentication import JWTAuthentication 
-from .serializers import UserSerializer, VerificationSerializer
-from core.models import User, Verification
+from .serializers import UserSerializer, VerificationTokenSerializer
+from core.models import User, verification_token
+from core.utils import send_verification_email
 
 
 # Create your views here.
@@ -25,7 +26,8 @@ class UserView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            user = serializer.save()
+            send_verification_email(user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -33,16 +35,27 @@ class UserView(APIView):
 
 class VerificationView(APIView):
 
-    def get(self, request, *args, **kwargs):
-        queryset = Verification.objects.all()
-        serializer = VerificationSerializer(queryset, many=True)
-        return Response(serializer.data)
-    
-    def post(self, request, *args, **kwargs):
-        serializer = VerificationSerializer(data={}, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        verification_instance = serializer.save()
-        
-        response_serializer = VerificationSerializer(verification_instance)
+    def post(self, request):
+        try:
+            reqtoken = request.data.get('token')
+            token_obj = verification_token.objects.get(token=reqtoken)
+            user = token_obj.user
+            user.email_verified = True
+            user.save()
+            token_obj.delete()
+            return Response(
+                {'message': 'Email successfully verified!'},     
+                status=status.HTTP_200_OK
+                    )          
+        except verification_token.DoesNotExist:
+            return Response(
+                {'error': 'Invalid or expired token.'}, 
+                status=status.HTTP_400_BAD_REQUEST
+                    )
 
-        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+
+
+
+        
+
+        

@@ -1,11 +1,10 @@
 import secrets
 from rest_framework import serializers
-from core.models import User
+from core.models import User, verification_token
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.db import transaction
-from core.models import Verification
 from django.core.mail import send_mail
 import random
 from rest_framework.exceptions import ValidationError
@@ -28,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
         if attrs.get('password') != attrs.pop('confirmPassword', None):
             raise serializers.ValidationError({'confirmPassword': 'Passwords do not match!'})
         else:
-            return attrsoo
+            return attrs
         
     def create(self, validated_data):
         try:
@@ -47,60 +46,11 @@ class UserSerializer(serializers.ModelSerializer):
             
 
 
-class VerificationSerializer(serializers.ModelSerializer):
-
+class VerificationTokenSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Verification
-        fields = ['username', 'email', 'verified', 'passphrase']
-        read_only_fields = ['username', 'email', 'verified']
-
-    
-
-    def create(self, validated_data):
-
-        request = self.context.get('request')
-
-        user = request.user
-
-        if not request or not request.user.is_authenticated:
-            raise ValidationError('User is not authenticated!')
-        
-        passphrase = secrets.randbelow(1_000_000)
-        passphrase_str = f'{passphrase:06d}'
-
-        validated_data['username'] = user.username
-        validated_data['email'] = user.email
-        validated_data['passphrase'] = passphrase_str
-        
-
-
-        verification_instance = Verification.objects.create(**validated_data)
-        
-        self.send_email(user.username, user.email, passphrase_str)
-
-        return verification_instance
-
-
-
-    def send_email(self, username, email, passphrase):
-        
-        try:
-            recipient_list = [email]
-            send_mail(
-                'Email Verification',
-                f'Hello {username}, \n This is your verification code: {passphrase}.',
-                None,
-                recipient_list,
-                fail_silently=False,
-            )
-            raise 'email sent'
-            
-
-        except Exception:
-            raise ValidationError('could not send email!')
-        
-    
-
-    
-
-    
+        model = verification_token
+        fields = ['user', 'token']
+        extra_keywargs = {
+            'token': {'required': True},
+            'user': {'required': True}
+        }

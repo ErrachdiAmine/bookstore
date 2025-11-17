@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-
+import secrets
 
 # Create your models here.
 
@@ -16,7 +16,7 @@ class User(AbstractUser):
     username = models.CharField(max_length=25, unique=True)
     email = models.EmailField(unique=True)
     address = models.CharField(max_length=50)
-    is_active = models.BooleanField(default=True)  # Changed to False - users must verify email first
+    is_active = models.BooleanField(default=False)  # Changed to False - users must verify email first
     is_staff = models.BooleanField(default=False)
     email_verified = models.BooleanField(default=False)
 
@@ -24,16 +24,9 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['username']
 
 
-
-class Verification(models.Model):
-    username = models.CharField(max_length=25)
-    email = models.EmailField(unique=True)
-    passphrase = models.CharField(max_length=6, blank=True)
-    verified = models.BooleanField(default=False)
+class verification_token(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    token = secrets.token_hex(16)
 
 
-    def __str__(self):
-        if self.verified is True:
-            return f"{self.username}'s email is verified!"
-        else:
-            return f"{self.username}'s email is not verified!"
+  

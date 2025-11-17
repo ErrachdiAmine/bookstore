@@ -48,7 +48,6 @@ const Register = () => {
         form.confirmPassword, 
         form.address
       );
-      setSuccess(true);
 
       try {
         loginUser(form.email, form.password)
@@ -57,6 +56,8 @@ const Register = () => {
         console.log(err);
         setError(err.detail);
       }
+
+      setSuccess(true);
 
     
     } catch (err) {
@@ -70,7 +71,7 @@ const Register = () => {
   };
 
 
-
+  
 
 
 

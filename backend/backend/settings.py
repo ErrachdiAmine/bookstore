@@ -126,10 +126,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST', default='errachdi.og@gmail.com')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS', default='1234AAfor!!og')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST', default='errachdiamine56@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS', default='jpvf hcgu ksjt peti')
 DEFAULT_FROM_EMAIL = 'Leafline Books <noreply@gmail.com>'
-
 
 
 # Password validation
