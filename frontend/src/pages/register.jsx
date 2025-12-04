@@ -38,7 +38,7 @@ const Register = () => {
     setSuccess(false);
     setLoading(true);
 
-    try {
+    try {fi
       await registerUser(
         form.first_name,
         form.last_name,
