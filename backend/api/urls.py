@@ -13,6 +13,6 @@ urlpatterns = [
     path('auth/token/', TokenObtainPairView.as_view(), name='token_pair'),
     path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/signup/', UserView.as_view(), name='signup'),
-    path('auth/verify/<token>', VerificationView.as_view(), name='email_verification')
+    path('auth/verification-token/', VerificationView.as_view(), name='token_obj')
 ]
 

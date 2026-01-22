@@ -1,11 +1,5 @@
 from django.db import models
-from django.utils import timezone
-import uuid
 from django.contrib.auth.models import AbstractUser
-from django.conf import settings
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
 import secrets
 
 # Create your models here.

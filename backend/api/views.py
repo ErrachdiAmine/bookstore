@@ -5,7 +5,7 @@ from django.http import Http404
 from rest_framework.permissions import AllowAny
 from rest_framework import status
 from rest_framework_simplejwt.authentication import JWTAuthentication 
-from .serializers import UserSerializer, VerificationTokenSerializer
+from .serializers import UserSerializer
 from core.models import User, verification_token
 from core.utils import send_verification_email
 
@@ -34,6 +34,7 @@ class UserView(APIView):
 
 
 class VerificationView(APIView):
+    permission_classes = [AllowAny]
 
     def post(self, request):
         try:

@@ -7,6 +7,7 @@ import axios from 'axios';
 
 
 const Register = () => {
+
     
   const [form, setForm] = useState({
     first_name: '',
@@ -38,7 +39,8 @@ const Register = () => {
     setSuccess(false);
     setLoading(true);
 
-    try {fi
+    try {
+      console.log(form.first_name)
       await registerUser(
         form.first_name,
         form.last_name,
@@ -48,6 +50,8 @@ const Register = () => {
         form.confirmPassword, 
         form.address
       );
+
+      navigate('/verifying-email')
 
       try {
         loginUser(form.email, form.password)

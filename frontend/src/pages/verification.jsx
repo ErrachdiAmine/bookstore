@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import { useSearchParams } from 'react-router'
 
 function Verification() {
 
@@ -8,8 +9,11 @@ function Verification() {
   
   const [UrlToken, SetUrlToken] = useState(null)
   const [token, SetToken] = useState(null)
+  const [ searchParams ] = useSearchParams()
 
-  
+
+  SetUrlToken(searchParams.get('token'))
+
   
 
   return (
@@ -19,7 +23,7 @@ function Verification() {
             Please wait while we verify your email...
         </div>
     </form>
-    
+     
     
     
     

@@ -5,7 +5,7 @@ import Login from "../src/pages/login";
 import Verification from "./pages/verification";
 import App from "../src/App";
 import Notfound from "../src/pages/notfound";
-import StudentRightsDashboard from "./pages/temporarypage";
+import verifying from "./pages/verifying";
 
 
 
@@ -62,17 +62,17 @@ const router = createBrowserRouter(
 
         },
         {
-            path: '/students-rights-part-2',
+            path: '/verifying-email',
             element: <App />,
             errorElement: <Notfound />,
             children: [
                 {
                     index: true,
-                    element: <StudentRightsDashboard />
-                }, 
+                    element: <verifying />
+                }
             ]
-
-        },
+        }
+       
       
     ]
 )

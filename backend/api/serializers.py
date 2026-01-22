@@ -46,11 +46,3 @@ class UserSerializer(serializers.ModelSerializer):
             
 
 
-class VerificationTokenSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = verification_token
-        fields = ['user', 'token']
-        extra_keywargs = {
-            'token': {'required': True},
-            'user': {'required': True}
-        }

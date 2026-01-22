@@ -15,7 +15,7 @@ export const registerUser = async (firstname, lastname, username, email, passwor
             password,
             confirmPassword,
             address  
-        });
+        });        
         return response.data;
     } catch (error) {
         throw error.response.data;  
@@ -94,7 +94,7 @@ const getPassphrase = () => {
         headers: {
         'Authorization': `Bearer ${token}` ,
         'accept': 'application/json'
-
+ 
         }}
     ) 
     console.log(passphrase)

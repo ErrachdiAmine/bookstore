@@ -110,7 +110,8 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':   'django.db.backends.mysql',
-        'NAME':     os.getenv('NAME', default='coredb'),
+        'NAME':     os.getenv('NAME', default='core_db'),
+        'USER':     os.getenv('USER', default='theog'),
         'HOST':     os.getenv('HOST', default='localhost'),
         'PORT':     os.getenv('PORT', default='8000'),
         'PASSWORD': os.getenv('PASSWORD', default='000')        
@@ -126,8 +127,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST', default='errachdiamine56@gmail.com')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS', default='jpvf hcgu ksjt peti')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS')
 DEFAULT_FROM_EMAIL = 'Leafline Books <noreply@gmail.com>'
 
 
