@@ -5,7 +5,7 @@ import Login from "../src/pages/login";
 import Verification from "./pages/verification";
 import App from "../src/App";
 import Notfound from "../src/pages/notfound";
-import verifying from "./pages/verifying";
+import Verifying from "./pages/verifying";
 
 
 
@@ -68,7 +68,7 @@ const router = createBrowserRouter(
             children: [
                 {
                     index: true,
-                    element: <verifying />
+                    element: <Verifying />
                 }
             ]
         }

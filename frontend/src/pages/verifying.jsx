@@ -1,9 +1,11 @@
-import React from 'react'
 
-const verifying = () => {
+
+
+
+const Verifying = () => {
   return (
-    <h1 style={font-bold}>verifying</h1>
+    <h1>verifying</h1>
   )
 }
 
-export default verifying
+export default Verifying

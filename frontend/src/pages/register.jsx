@@ -40,7 +40,6 @@ const Register = () => {
     setLoading(true);
 
     try {
-      console.log(form.first_name)
       await registerUser(
         form.first_name,
         form.last_name,
@@ -73,10 +72,6 @@ const Register = () => {
       
     }
   };
-
-
-  
-
 
 
   return (
