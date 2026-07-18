@@ -1,104 +1,55 @@
-import axios from "axios"
-import { jwtDecode } from "jwt-decode"
-import { useEffect, useState } from "react";
+import axios from 'axios'
+import { jwtDecode } from 'jwt-decode'
 
-const API_LINK = import.meta.env.VITE_API_URL
+const API_LINK = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
+const endpoint = (path) => `${API_LINK}${path}`
 
+const responseError = (error) => error.response?.data || { detail: 'Unable to reach the server.' }
 
-export const registerUser = async (firstname, lastname, username, email, password, confirmPassword, address ) => {
-    try {
-        const response = await axios.post(`${API_LINK}/api/auth/signup/`, {
-            first_name: firstname,
-            last_name: lastname,
-            username,
-            email,
-            password,
-            confirmPassword,
-            address  
-        });        
-        return response.data;
-    } catch (error) {
-        throw error.response.data;  
+export const registerUser = async (firstname, lastname, username, email, password, confirmPassword, address) => {
+  try {
+    const response = await axios.post(endpoint('/api/auth/signup/'), {
+      first_name: firstname, last_name: lastname, username, email, password, confirmPassword, address,
+    })
+    return response.data
+  } catch (error) {
+    throw responseError(error)
+  }
+}
+
+export const loginUser = async (identifier, password) => {
+  const credential = identifier.trim()
+  const payload = credential.includes('@') ? { email: credential, password } : { username: credential, password }
+  try {
+    const response = await axios.post(endpoint('/api/auth/token/'), payload)
+    const { access, refresh } = response.data
+    localStorage.setItem('access', access)
+    localStorage.setItem('refresh', refresh)
+    localStorage.setItem('expires-at', jwtDecode(access).exp * 1000)
+    if (response.data.user) localStorage.setItem('user', JSON.stringify(response.data.user))
+    return response.data
+  } catch (error) {
+    throw responseError(error)
+  }
+}
+
+export const getCurrentUser = () => {
+  const access = localStorage.getItem('access') || localStorage.getItem('access_token')
+  if (!access) return null
+  try {
+    const { exp, username } = jwtDecode(access)
+    if (exp && exp * 1000 <= Date.now()) {
+      logoutUser()
+      return null
     }
+    const savedUser = JSON.parse(localStorage.getItem('user') || 'null')
+    return savedUser || (username ? { username } : { username: 'Account' })
+  } catch {
+    logoutUser()
+    return null
+  }
 }
 
-export const loginUser = async (email, password) => {
-    try {
-        const response = await axios.post(`${API_LINK}/api/auth/token/`, {
-            email,
-            password
-        });
-
-        const access = response.data.access
-        const decode = jwtDecode(access)
-        const exp = decode.exp
-
-        localStorage.setItem('access', response.data.access)
-        localStorage.setItem('refresh', response.data.refresh)
-        localStorage.setItem('expires-at', exp*1000)
-
-        return response.data;
-    } catch (error) {
-        throw error.response.data;
-    }
+export const logoutUser = () => {
+  ;['access', 'refresh', 'access_token', 'refresh_token', 'expires-at', 'user', 'logged'].forEach(key => localStorage.removeItem(key))
 }
-
-export const get_token = async (email, password) => {
-    try {
-        const response = await axios.post(`${API_LINK}/api/auth/token/`, {
-            email,
-            password
-        });
-
-        const access = response.data.access
-        const decode = jwtDecode(access)
-        const exp = decode.exp
-
-        localStorage.setItem('access', response.data.access)
-        localStorage.setItem('refresh', response.data.refresh)
-        localStorage.setItem('expires-at', exp)
-
-    } catch (error) {
-        throw error.response.data;
-    }
-}
-
-
-export const refresh_token = async (refresh, exptime) => {
-    try {
-        const meantime = Math.floor(Date.now() / 1000)
-        const remaining = exptime - meantime;
-
-        console.log(`Token expires in: ${remaining}`)
-
-        if (remaining == 5) {
-
-            const response = await axios.post(API_LINK, refresh)
-
-            localStorage.setItem('success', response.data.success)
-        }
-        
-    } catch (error) {
-        throw error.response.data;
-    }
-}
-
-
-const token = localStorage.getItem('access')
-
-console.log(token)
-
-
-const getPassphrase = () => {
-    const passphrase = axios.post(`${API_LINK}/api/auth/verification/`, {}, {
-        headers: {
-        'Authorization': `Bearer ${token}` ,
-        'accept': 'application/json'
- 
-        }}
-    ) 
-    console.log(passphrase)
-    return passphrase;
-}
-
-getPassphrase()

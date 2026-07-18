@@ -1,0 +1,11 @@
+import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { Minus, Plus, Trash2 } from 'lucide-react'
+import Container from '../components/Container'
+export default function Cart(){
+  const [cart, setCart] = useState([]); useEffect(() => { try { setCart(JSON.parse(localStorage.getItem('cart') || '[]')) } catch { setCart([]) } }, [])
+  const updateQty = (id, qty) => { const newCart = cart.map(item => item.id === id ? { ...item, quantity: Math.max(1, qty) } : item); setCart(newCart); localStorage.setItem('cart', JSON.stringify(newCart)) }
+  const remove = id => { const newCart = cart.filter(i => i.id !== id); setCart(newCart); localStorage.setItem('cart', JSON.stringify(newCart)) }
+  const total = cart.reduce((sum, item) => sum + parseFloat(item.price || 0) * (item.quantity || 1), 0).toFixed(2)
+  return <Container><section className="cart-page"><p className="eyebrow">Your selection</p><h1 className="display">Shopping bag</h1>{!cart.length ? <div className="empty-cart panel"><h2 className="display">Your bag is waiting.</h2><p>There are so many stories still to discover.</p><Link to="/books" className="button button-primary">Browse books</Link></div> : <div className="cart-layout"><div className="cart-items panel">{cart.map(item => <div className="cart-item" key={item.id}><div className="cart-item-title"><h2>{item.title}</h2><span>${item.price} each</span></div><div className="quantity"><button onClick={() => updateQty(item.id, item.quantity - 1)} aria-label="Decrease quantity"><Minus size={14}/></button><span>{item.quantity}</span><button onClick={() => updateQty(item.id, item.quantity + 1)} aria-label="Increase quantity"><Plus size={14}/></button></div><strong>${(parseFloat(item.price || 0) * item.quantity).toFixed(2)}</strong><button onClick={() => remove(item.id)} className="remove" aria-label={`Remove ${item.title}`}><Trash2 size={17}/></button></div>)}</div><aside className="order-summary panel"><h2 className="display">Order summary</h2><div><span>Subtotal</span><strong>${total}</strong></div><div><span>Shipping</span><span>Calculated at checkout</span></div><div className="total"><span>Total</span><strong>${total}</strong></div><button className="button button-primary">Continue to checkout</button></aside></div>}</section></Container>
+}

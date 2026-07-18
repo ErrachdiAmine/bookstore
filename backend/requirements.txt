@@ -1,0 +1,8 @@
+# PyMySQL is a pure-Python MySQL driver.  Do not replace it with mysqlclient:
+# mysqlclient requires native MySQL headers and a C compiler to build a wheel.
+Django>=5.2,<6.1
+djangorestframework>=3.15,<3.17
+djangorestframework-simplejwt>=5.3,<6
+django-cors-headers>=4.4,<5
+PyMySQL>=1.1,<2
+Pillow>=10.4

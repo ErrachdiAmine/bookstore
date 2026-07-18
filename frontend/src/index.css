@@ -1,1 +1,36 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { font-family: 'DM Sans', sans-serif; color: #29221d; background: #f8f5ef; font-synthesis: none; }
+* { box-sizing: border-box; }
+html { min-width: 320px; }
+body { margin: 0; min-width: 320px; background: #f8f5ef; }
+button, input, textarea { font: inherit; }
+button { cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+
+.page-shell { min-height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+.site-main { flex: 1; }
+.site-container { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+.display { font-family: 'Playfair Display', Georgia, serif; letter-spacing: -.035em; }
+.eyebrow { color: #a8502d; font-size: .72rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border: 1px solid transparent; border-radius: 999px; padding: .72rem 1.15rem; font-size: .9rem; font-weight: 700; transition: transform .2s, background .2s, border-color .2s, color .2s; }
+.button:hover { transform: translateY(-1px); }
+.button-primary { background: #a8502d; color: white; box-shadow: 0 8px 18px rgba(129, 57, 28, .18); }
+.button-primary:hover { background: #873d20; }
+.button-secondary { background: #fffdf8; border-color: #d9cfc1; color: #493a30; }
+.button-secondary:hover { border-color: #a8502d; color: #a8502d; }
+.button-dark { background: #29221d; color: #fffdf8; }
+.button-dark:hover { background: #493a30; }
+.field-label { display: block; margin-bottom: .45rem; color: #493a30; font-size: .85rem; font-weight: 700; }
+.field { width: 100%; border: 1px solid #ded5c9; border-radius: .7rem; padding: .75rem .9rem; color: #29221d; background: #fffdf9; outline: none; transition: border-color .2s, box-shadow .2s; }
+.field:focus { border-color: #a8502d; box-shadow: 0 0 0 3px rgba(168,80,45,.12); }
+.panel { background: #fffdf9; border: 1px solid #e5ddd2; border-radius: 1.2rem; box-shadow: 0 12px 30px rgba(62, 44, 30, .05); }
+.notice { padding: .8rem 1rem; border-radius: .7rem; font-size: .9rem; }
+.notice-error { background: #fbe7df; color: #9b331a; }
+.notice-success { background: #e7f3e7; color: #356241; }
+
+@media (max-width: 640px) { .site-container { width: min(100% - 28px, 1180px); } }
