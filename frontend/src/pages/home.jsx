@@ -1,83 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Search } from 'lucide-react';
+import React, { useState, useEffect } from 'react'
+import { ArrowRight, Search, ShoppingBag, Sparkles } from 'lucide-react'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import Container from '../components/Container'
+import BookCard from '../components/BookCard'
+
+const API_LINK = import.meta.env.VITE_API_URL || ''
 
 function Home () {
-  const [books, setBooks] = useState([]);
-  const [query, setQuery] = useState('');
-  const [filtered, setFiltered] = useState([]);
-
-  useEffect(() => {
-    const mockBooks = [
-      { id: 1, title: 'Modern React', author: 'Jane Doe', cover: '/covers/react.jpg' },
-      { id: 2, title: 'Tailwind in Action', author: 'John Smith', cover: '/covers/tailwind.jpg' },
-      { id: 3, title: 'JavaScript Patterns', author: 'Alex Johnson', cover: '/covers/js.jpg' },
-      { id: 4, title: 'Design Systems', author: 'Emily Clark', cover: '/covers/design.jpg' },
-    ];
-    setBooks(mockBooks);
-    setFiltered(mockBooks);
-  }, []);
-
-  useEffect(() => {
-    const results = books.filter(book =>
-      book.title.toLowerCase().includes(query.toLowerCase()) ||
-      book.author.toLowerCase().includes(query.toLowerCase())
-    );
-    setFiltered(results);
-  }, [query, books]);
-
-
-  return (
-    <div className="min-h-screen bg-white p-4 sm:p-6">
-      <header className="flex flex-col sm:flex-row items-center justify-between mb-6">
-        <h1 className="text-2xl sm:text-3xl font-semibold text-blue-600 mb-4 sm:mb-0">Book Catalog</h1>
-
-        <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-          <div className="relative w-full sm:w-auto">
-            <input
-              type="text"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              placeholder="Search by title or author"
-              className="w-65 border border-gray-300 rounded-l-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              onClick={() => {}}
-              className="absolute right-0 top-0 h-full px-4 bg-blue-600 text-white rounded-r-md transition-colors duration-200 hover:bg-blue-700"
-              aria-label="Search"
-            >
-              <Search className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        {filtered.map(book => (
-          <div
-            key={book.id}
-            className="bg-white border border-gray-200 rounded-lg shadow-lg transform transition-transform duration-200 hover:scale-105"
-          >
-            <img
-              src={book.cover}
-              alt={book.title}
-              className="h-40 sm:h-48 w-full object-cover rounded-t-lg"
-            />
-            <div className="p-4 flex flex-col items-center text-center">
-              <h2 className="text-lg sm:text-xl font-medium text-blue-600 mb-1">{book.title}</h2>
-              <p className="text-xs sm:text-sm text-gray-500 mb-4">by {book.author}</p>
-              <button
-                className="w-full border border-blue-600 text-blue-600 rounded-md px-4 py-2 transition-colors duration-200 hover:bg-blue-600 hover:text-white"
-                onClick={() => {} }
-              >
-                View Details
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>-
-    </div>
-  );
+  const [books, setBooks] = useState([])
+  const [query, setQuery] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [notif, setNotif] = useState(null)
+  const navigate = useNavigate()
+  useEffect(() => { const fetchBooks = async () => { setLoading(true); try { const resp = await axios.get(`${API_LINK}/api/books/`); const data = Array.isArray(resp.data) ? resp.data : resp.data.results || []; setBooks(data) } catch (err) { console.error('Failed to fetch books', err) } finally { setLoading(false) } }; fetchBooks() }, [])
+  const filtered = books.filter(book => book.title.toLowerCase().includes(query.toLowerCase()) || (book.authors || '').toLowerCase().includes(query.toLowerCase()))
+  const addToCart = (book) => { try { const cart = JSON.parse(localStorage.getItem('cart') || '[]'); const existing = cart.find(item => item.id === book.id); if (existing) existing.quantity = (existing.quantity || 1) + 1; else cart.push({ id: book.id, title: book.title, price: book.price, quantity: 1 }); localStorage.setItem('cart', JSON.stringify(cart)); setNotif(`${book.title} added to your bag`); setTimeout(() => setNotif(null), 2500) } catch (err) { console.error('Error adding to cart', err) } }
+  return <>
+    <section className="hero"><Container><div className="hero-grid"><div className="hero-copy"><p className="eyebrow">For curious minds</p><h1 className="display">Find a story<br/><em>that stays with you.</em></h1><p className="hero-text">A considered collection of books for every kind of reader. Discover a new favorite, or give a loved story its next chapter.</p><div className="hero-actions"><button onClick={() => navigate('/books')} className="button button-primary">Explore the shelves <ArrowRight size={17}/></button><button onClick={() => navigate('/books/add')} className="button button-secondary">Sell a book</button></div></div><div className="hero-art"><div className="hero-glow"></div><div className="hero-book hero-book-one">On<br/>reading</div><div className="hero-book hero-book-two">THE<br/>WILD<br/>IRIS</div><div className="hero-book hero-book-three">MORNING<br/>LIGHT</div><span className="hero-note"><Sparkles size={16}/> A little magic on every shelf</span></div></div></Container></section>
+    <Container><section className="catalog-section"><div className="section-heading"><div><p className="eyebrow">New on the shelf</p><h2 className="display">Books to get lost in</h2></div><button className="text-link" onClick={() => navigate('/books')}>View all books <ArrowRight size={16}/></button></div><div className="home-search"><Search size={19}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search by title or author" aria-label="Search books"/></div>{notif && <div className="notice notice-success">{notif}</div>}{loading && <p className="state-text">Arranging the shelves…</p>}<div className="book-grid">{filtered.slice(0, 8).map(book => <div key={book.id} className="book-grid-item"><button className="book-link" onClick={() => navigate(`/books/${book.id}`)}><BookCard book={book}/></button><button className="quick-add" onClick={() => addToCart(book)}><ShoppingBag size={16}/> Add to bag</button></div>)}</div>{!loading && !filtered.length && <div className="empty-state">No stories matched that search.</div>}</section></Container>
+  </>
 }
-
-
-export default Home;
+export default Home
